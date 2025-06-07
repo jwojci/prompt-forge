@@ -1,7 +1,6 @@
-import streamlit as st
-import json
-import os
 import logging
+
+import streamlit as st
 from dotenv import load_dotenv
 
 from engine import (
@@ -50,7 +49,9 @@ with st.sidebar:
     st.header("Session History")
     if st.session_state.history:
         for i, entry in enumerate(reversed(st.session_state.history)):
-            with st.expander(f"Prompt {len(st.session_state.history) - i}: {entry['user_prompt'][:30]}..."):
+            with st.expander(
+                f"Prompt {len(st.session_state.history) - i}: {entry['user_prompt'][:30]}..."
+            ):
                 st.write(f"**Strategy:** {entry['strategy']}")
                 st.write(f"**Original Prompt:** `{entry['user_prompt']}`")
                 st.write(f"**Refined Prompt:** `{entry['refined_prompt']}`")
@@ -82,23 +83,31 @@ selected_strategy = st.selectbox(
 forge_button = st.button("Forge Prompt & Evaluate")
 
 if forge_button and user_prompt:
-    st.info("Forging your prompt, generating responses, and evaluating... This may take a moment.")
+    st.info(
+        "Forging your prompt, generating responses, and evaluating... This may take a moment."
+    )
     logger.info(f"User initiated forging for prompt: {user_prompt[:50]}...")
 
     with st.spinner("Step 1/5: Retrieving relevant examples (RAG)..."):
         # 1. Retrieve relevant examples using RAG
         retrieved_examples_list = retrieve_relevant_examples(user_prompt, k=3)
-        retrieved_examples_str = "\n\n".join(retrieved_examples_list) if retrieved_examples_list else "No relevant examples found in knowledge base."
+        retrieved_examples_str = (
+            "\n\n".join(retrieved_examples_list)
+            if retrieved_examples_list
+            else "No relevant examples found in knowledge base."
+        )
         logger.info(f"Retrieved {len(retrieved_examples_list)} examples.")
 
     with st.spinner("Step 2/5: Refining the prompt..."):
         # 2. Refine the prompt
         system_instruction_for_refiner = SYSTEM_PROMPTS.get(selected_strategy)
         if not system_instruction_for_refiner:
-            st.error("Invalid strategy selected. Please choose from the available options.")
+            st.error(
+                "Invalid strategy selected. Please choose from the available options."
+            )
             logger.error(f"Invalid strategy selected: {selected_strategy}")
             st.stop()
-            
+
         refined_prompt = refine_prompt(
             user_prompt=user_prompt,
             system_prompt=system_instruction_for_refiner,
@@ -107,7 +116,7 @@ if forge_button and user_prompt:
         if not refined_prompt:
             st.warning("Prompt refinement failed. Please check backend logs.")
             logger.warning("Refined prompt is empty.")
-            refined_prompt = user_prompt # Fallback to original prompt
+            refined_prompt = user_prompt  # Fallback to original prompt
         logger.info("Prompt refined successfully.")
 
     with st.spinner("Step 3/5: Generating response with original prompt..."):
@@ -117,7 +126,6 @@ if forge_button and user_prompt:
             st.warning("Failed to generate output with original prompt.")
             logger.warning("Original output is empty.")
         logger.info("Original output generated.")
-
 
     with st.spinner("Step 4/5: Generating response with refined prompt..."):
         # 4. Generate response with refined prompt
@@ -132,7 +140,9 @@ if forge_button and user_prompt:
         scores = evaluate_outputs(original_output, refined_output, user_prompt)
         original_score = scores.get("score_A", 0)
         refined_score = scores.get("score_B", 0)
-        logger.info(f"Evaluation complete: Original Score={original_score}, Refined Score={refined_score}")
+        logger.info(
+            f"Evaluation complete: Original Score={original_score}, Refined Score={refined_score}"
+        )
 
     st.success("Process complete! See results below.")
 
@@ -160,14 +170,15 @@ if forge_button and user_prompt:
     with st.expander("Show Refined Prompt and RAG Details"):
         st.markdown(f"**Refinement Strategy:** `{selected_strategy}`")
         st.markdown(f"**Refined Prompt:**")
-        st.code(refined_prompt, language='markdown')
+        st.code(refined_prompt, language="markdown")
         st.markdown(f"**Retrieved Examples (for RAG):**")
         if retrieved_examples_list:
             for i, example in enumerate(retrieved_examples_list):
                 st.text_area(f"Example {i+1}", example, height=200, key=f"example_{i}")
         else:
-            st.info("No specific examples were used from the knowledge base for refinement.")
-
+            st.info(
+                "No specific examples were used from the knowledge base for refinement."
+            )
 
     # Update session history
     st.session_state.history.append(

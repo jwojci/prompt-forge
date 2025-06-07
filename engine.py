@@ -3,12 +3,14 @@ import json
 import logging
 
 import faiss
-import numpy as np
+from sentence_transformers import SentenceTransformer
+
 from google import genai
 from google.genai import types
+
+import streamlit as st
 from pydantic import BaseModel
-from sentence_transformers import SentenceTransformer
-from dotenv import load_dotenv
+
 from knowledge_base import KNOWLEDGE_BASE  # Import KNOWLEDGE_BASE at the top
 
 # LOGGER CONFIG
@@ -244,6 +246,7 @@ def evaluate_outputs(
         return {"score_A": 0, "score_B": 0}
 
 
+@st.cache_data
 def get_llm_response(prompt: str) -> str:
     """
     Generates a response from an LLM based on the given prompt.
