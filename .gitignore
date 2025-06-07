@@ -1,0 +1,5 @@
+.venv/
+.env 
+*.bin
+*.log
+PRD.md
