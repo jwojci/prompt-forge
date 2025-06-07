@@ -2,7 +2,6 @@
 
 ### Live Demo
 
-[streamlit-app-2025-06-07-20-06-60 (1).webm](https://github.com/user-attachments/assets/dfb78337-d685-4baa-8c5d-6124c7712d59)
 
 ---
 
