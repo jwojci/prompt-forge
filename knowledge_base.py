@@ -203,7 +203,7 @@ def create_vector_store(knowledge_base: list[dict], model: SentenceTransformer) 
     print(f"Embeddings generated with dimension: {d}")
 
     print("Creating FAISS index...")
-    index = faiss.IndexFlatL2(d)
+    index = faiss.IndexFlatIP(d)
 
     # Add the vectorized prompts to the index
     index.add(embeddings)
