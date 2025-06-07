@@ -3,3 +3,4 @@
 *.bin
 *.log
 PRD.md
+__pycache__/
