@@ -1,4 +1,3 @@
----
 # ✨ PromptForge – A Prompt Optimization Playground with RAG
 
 ### Live Demo
