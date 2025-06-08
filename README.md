@@ -1,9 +1,8 @@
----
 # ✨ PromptForge – A Prompt Optimization Playground with RAG
 
 ### Live Demo
 
-*(Link and GIF coming soon after deployment.)*
+https://huggingface.co/spaces/yakubbb/prompt-forge
 
 ---
 
