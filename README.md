@@ -2,6 +2,7 @@
 
 ### Live Demo
 
+https://huggingface.co/spaces/yakubbb/prompt-forge
 
 ---
 
